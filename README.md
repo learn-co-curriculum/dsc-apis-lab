@@ -1,274 +1,142 @@
 
-# API Connections, Dataframes + Pandas
+# Building a Simple GIS with Yelp API and Folium - Lab
+
+## Introduction 
+
+So we have learned quite a bit about APIs and how they are now big buzzword in the tech industry. Think of it as a protocol for how to make requests and communicate with another server. We have seen how to mine Twitter for getting text data and apply basic frequency based NLP techniques to get some insight. 
+
+One of the key aspects of being a data scientist is the ability to learn how a new API works, how to go through its specific authentication process (OAuth) and how to process the data structures that get returned as a response to our requests. It is a good practice to spend some time learning the API through the official documentation before sending in requests. 
+
+On these lines, this lab requires you to learn another popular API (YELP Fusion) by following the provided detailed online documentation. We shall build a simple Geographical Information System (GIS) using the data from yelp.
 
 ### Objectives
+You will be able to: 
+* Successfully sign up for Yelp API 
+* Create HTTP requests to get data from Yelp API
+* Parse HTTP responses and perform data analysis on the data returned
+* Create a simple geographical system on to view information about selected businesses, at a given location. 
 
-* Explain an HTTP Request
-* Explain OAuth
-* Use the requests package to make HTTP Get Requests
-* Use the requests to make HTTP Get Requests with headers and url parameters
-* Create a DataFrame using the Pandas Package
-* Use basic Pandas methods such as:
-    * df.head() / df.tail()
-    * df[col].plot(kind = 'barh')
-* Visualize Results Using Folium
 
-### Introduction  
+## The Yelp Fusion API - v3
 
-APIs are a big buzzword in the tech industry. So what is an API you ask? API stands for Application Program Interface. Think of it as a protocol for how to make requests and communicate with another server.
 
-But before we get to APIs, we should have a general understanding of how HTTP requests work. Often, we just type in a website domain into the url bar and hit go. Sometimes we don't even do that, we just google it and click the link. A lot is happening in the background. Let's explore this process a little further.  
+### Point your browser over to this [yelp page](https://www.yelp.com/developers/v3/manage_app) and create an app in order to obtain  `client_id` and `api_key` tokens. 
 
-#### HTTP Requests
-HTTP stands for Hyper Text Transfer Protocol. This protocol (like many) was proposed by the Internet Engineering Task Force (IETF) through a request for comments (RFC). We're going to start with a very simple HTTP method: the get method.  
+**NOTE:** You will be required to sign up using Google or Facebook etc. if you dont already have an account.
 
-![](./images/http_requests.png)
+<img src="yelp_app.png" width=500>
 
-To learn more about HTTP methods see:  
-https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
 
-#### Python's Requests Package
 
-The first thing to understand when dealing with APIs is how to make get requests in general.
-To do this, we'll use the Python requests package.
+After registration, you'll be presented with your account information and limits of your access. For Yelp, or any other API for that reason, you need to make sure that you dont surpass your request quota, otherwise, you may end up getting banned in some cases. Yelp shows this information to you as below:
 
-http://docs.python-requests.org/en/master/
+<img src="quota.png" width=500>
 
-![](./images/requests_homepage.png)
-
-### Getting Started
+### Save your api_key and client_id in the variables below:
 
 
 ```python
-import requests
+# Save your tokens in the following string variables
+client_id = ''
+api_key = ''
 ```
 
-##### Make a get request:
+## The `yelpapi` 
+
+The yelpapi is a pure Python implementation of the Yelp Fusion API (aka Yelp v3 API). It is simple, fast, and robust to any changes Yelp may make to the API in the future. See tha basic usage of this library on the [official Github repo](https://github.com/gfairchild/yelpapi). You may look out for other APIs to achieve this but for this lesson, we shall use it for sake of simplicity. 
+
+First you must pip install the library
 
 
 ```python
-response = requests.get('https://flatironschool.com')
-print('Type:', type(response), '\n')
-print('Response:', response, '\n')
-print('Response text:\n', response.text)
+# !pip install yelpapi
 ```
 
-    Type: <class 'requests.models.Response'> 
-    
-    Response: <Response [403]> 
-    
-    Response text:
-     <html>
-    <head><title>403 Forbidden</title></head>
-    <body bgcolor="white">
-    <center><h1>403 Forbidden</h1></center>
-    <hr><center>nginx</center>
-    </body>
-    </html>
-    
-
-
-Hmmm, well that was only partially helpful. You can see that our request was denied. (This is shown by the response itself, which has the code 403, meaning forbidden.) Most likely, this is caused by permissioning from Flatiron School's servers, which may be blocking requests that appear to be from an automated platform.
-
-In general, here's some common HTTP response codes you might come across:
-![](./images/http_response_codes.gif)
-
-Let's try another get request in the hopes of getting a successful (200) response.
+### Import `yelpapi ` into working environment and pass in the api_key as shown in the Github Repo 
 
 
 ```python
-#The Electronic Frontier Foundation (EFF) website; advocating for data privacy and an open internet
-response = requests.get('https://www.eff.org')
+# Code here
+```
+
+### The Api request and response
+
+Great so we can now start making API calls using the format:
+```python
+response = yelp_api.search_query(term =<search term>, 
+                                 location=<search location>, 
+                                 sort_by='rating', 
+                                 limit=50)
+```
+We can pass in a lot more arguments to refine our search. [Here is a complete list of options that search API provides us](https://www.yelp.com/developers/documentation/v3/business_search)
+
+* Make an API request using a simple criteria location and term
+* save the response as `response` 
+* inspect the type and contents of `response`.
+
+
+```python
+## Pass in a spcific term and location to make a call. 
+
+# For this example, we are looking for chinese food in London.
+
+term = 'Chinese food'
+location = 'London'
+```
+
+
+```python
+# Make an API call using chosen term and location
+
+response = None
+type(response)
 print(response)
-print(response.text[:2500])
+
 ```
 
-    <Response [200]>
-    <!DOCTYPE html>
-      <!--[if IEMobile 7]><html class="no-js ie iem7" lang="en" dir="ltr"><![endif]-->
-      <!--[if lte IE 6]><html class="no-js ie lt-ie9 lt-ie8 lt-ie7" lang="en" dir="ltr"><![endif]-->
-      <!--[if (IE 7)&(!IEMobile)]><html class="no-js ie lt-ie9 lt-ie8" lang="en" dir="ltr"><![endif]-->
-      <!--[if IE 8]><html class="no-js ie lt-ie9" lang="en" dir="ltr"><![endif]-->
-      <!--[if (gte IE 9)|(gt IEMobile 7)]><html class="no-js ie" lang="en" dir="ltr" prefix="fb: http://ogp.me/ns/fb# og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product#"><![endif]-->
-      <!--[if !IE]><!--><html class="no-js" lang="en" dir="ltr" prefix="fb: http://ogp.me/ns/fb# og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product#"><!--<![endif]-->
-    <head>
-      <meta charset="utf-8" />
-    <link href="https://www.eff.org/vi" rel="alternate" hreflang="vi" />
-    <link rel="apple-touch-icon-precomposed" href="https://www.eff.org/sites/all/themes/phoenix/apple-touch-icon-precomposed-114x114.png" sizes="114x114" />
-    <link href="https://www.eff.org/ur" rel="alternate" hreflang="ur" />
-    <link href="https://www.eff.org/tr" rel="alternate" hreflang="tr" />
-    <link href="https://www.eff.org/sh" rel="alternate" hreflang="sh" />
-    <link href="https://www.eff.org/sv" rel="alternate" hreflang="sv" />
-    <link href="https://www.eff.org/th" rel="alternate" hreflang="th" />
-    <link rel="apple-touch-icon-precomposed" href="https://www.eff.org/sites/all/themes/phoenix/apple-touch-icon-precomposed-72x72.png" sizes="72x72" />
-    <link rel="apple-touch-icon-precomposed" href="https://www.eff.org/sites/all/themes/phoenix/apple-touch-icon-precomposed-144x144.png" sizes="144x144" />
-    <link rel="profile" href="http://www.w3.org/1999/xhtml/vocab" />
-    <link rel="shortcut icon" href="https://www.eff.org/sites/all/themes/frontier/favicon.ico" type="image/vnd.microsoft.icon" />
-    <meta name="HandheldFriendly" content="true" />
-    <meta name="MobileOptimized" content="width" />
-    <link rel="apple-touch-icon-precomposed" href="https://www.eff.org/sites/all/themes/phoenix/apple-touch-icon-precomposed.png" />
-    <meta http-equiv="cleartype" content="on" />
-    <link href="https://www.eff.org/ru" rel="alternate" hreflang="ru" />
-    <link href="https://www.eff.org/es" rel="alternate" hreflang="es" />
-    <link href
+    {'businesses': [{'id': 'QE5aa5N-dbfvafLsjn7TVg', 'alias': 'bamboo-flute-fitzrovia', 'name': 'Bamboo Flute', 'image_url': 'https://s3-media3.fl.yelpcdn.com/bphoto/kYQZjHmzt8zy1634OsAsxQ/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/bamboo-flute-fitzrovia?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 29, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.5, 'coordinates': {'latitude': 51.5228746, 'longitude': -0.1418939}, 'transactions': [], 'price': '£', 'location': {'address1': '145 Cleveland Street', 'address2': '', 'address3': '', 'city': 'Fitzrovia', 'zip_code': 'W1T 6QH', 'country': 'GB', 'state': 'XGL', 'display_address': ['145 Cleveland Street', 'Fitzrovia W1T 6QH', 'United Kingdom']}, 'phone': '+442073872738', 'display_phone': '+44 20 7387 2738', 'distance': 1189.5082547156321}, {'id': 'h2cCoDNQOPd51HFwvuAGNg', 'alias': 'hakkasan-london-3', 'name': 'Hakkasan', 'image_url': 'https://s3-media2.fl.yelpcdn.com/bphoto/IcS9yzJnweDO4DsfJ94jAw/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/hakkasan-london-3?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 216, 'categories': [{'alias': 'cantonese', 'title': 'Cantonese'}], 'rating': 4.0, 'coordinates': {'latitude': 51.5171482803943, 'longitude': -0.13180578932657}, 'transactions': [], 'price': '££££', 'location': {'address1': '8 Hanway Place', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'W1T 1HD', 'country': 'GB', 'state': 'XGL', 'display_address': ['8 Hanway Place', 'London W1T 1HD', 'United Kingdom']}, 'phone': '+442079277000', 'display_phone': '+44 20 7927 7000', 'distance': 558.9650039747677}, {'id': 'sYwBQ7mJYhB35nn-_SZstQ', 'alias': 'yauatcha-london-7', 'name': 'Yauatcha', 'image_url': 'https://s3-media4.fl.yelpcdn.com/bphoto/K7D6nwyZbZFODMy4jEfr0A/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/yauatcha-london-7?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 456, 'categories': [{'alias': 'dimsum', 'title': 'Dim Sum'}, {'alias': 'seafood', 'title': 'Seafood'}, {'alias': 'noodles', 'title': 'Noodles'}], 'rating': 4.0, 'coordinates': {'latitude': 51.5137076071076, 'longitude': -0.135128831605189}, 'transactions': [], 'price': '£££', 'location': {'address1': '15-17 Broadwick Street', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'W1F 0DL', 'country': 'GB', 'state': 'XGL', 'display_address': ['15-17 Broadwick Street', 'London W1F 0DL', 'United Kingdom']}, 'phone': '+442074948888', 'display_phone': '+44 20 7494 8888', 'distance': 112.59840998419494}, {'id': 'pdFiFtol9YI__9ROOXUIYA', 'alias': 'lanzhou-noodle-bar-london', 'name': 'Lanzhou Noodle Bar', 'image_url': 'https://s3-media4.fl.yelpcdn.com/bphoto/IKy91e7hb9w14m4eA9HH1w/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/lanzhou-noodle-bar-london?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 300, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}, {'alias': 'noodles', 'title': 'Noodles'}], 'rating': 4.0, 'coordinates': {'latitude': 51.5116034713013, 'longitude': -0.127834377873126}, 'transactions': [], 'price': '£', 'location': {'address1': '33 Cranbourne Street', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'WC2H 7AD', 'country': 'GB', 'state': 'XGL', 'display_address': ['33 Cranbourne Street', 'London WC2H 7AD', 'United Kingdom']}, 'phone': '+442074674546', 'display_phone': '+44 20 7467 4546', 'distance': 578.4743547816091}, {'id': 'chEEcQbc8PbidTeXK34H9g', 'alias': 'hakkasan-mayfair-london-2', 'name': 'Hakkasan Mayfair', 'image_url': 'https://s3-media4.fl.yelpcdn.com/bphoto/7l0tXtBLbWOtWTCQVJLLYw/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/hakkasan-mayfair-london-2?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 116, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.0, 'coordinates': {'latitude': 51.5103202323384, 'longitude': -0.144935268434918}, 'transactions': [], 'price': '££££', 'location': {'address1': '17 Bruton Street', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'W1J 6QB', 'country': 'GB', 'state': 'XGL', 'display_address': ['17 Bruton Street', 'London W1J 6QB', 'United Kingdom']}, 'phone': '+442079071888', 'display_phone': '+44 20 7907 1888', 'distance': 681.4450716267161}, {'id': '6iCxFP7Oc0qG_6ByenO0sw', 'alias': 'silk-road-london-2', 'name': 'Silk Road', 'image_url': 'https://s3-media3.fl.yelpcdn.com/bphoto/pUXusTIbeDRInvi6fkNjmA/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/silk-road-london-2?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 43, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.5, 'coordinates': {'latitude': 51.4739712, 'longitude': -0.0896081}, 'transactions': [], 'price': '££', 'location': {'address1': '49 Camberwell Church Street', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'SE5 8TR', 'country': 'GB', 'state': 'XGL', 'display_address': ['49 Camberwell Church Street', 'London SE5 8TR', 'United Kingdom']}, 'phone': '+442077034832', 'display_phone': '+44 20 7703 4832', 'distance': 5403.445838977789}, {'id': 'Mrv3dA42EioqBz50t_f24Q', 'alias': 'hunan-london', 'name': 'Hunan', 'image_url': 'https://s3-media3.fl.yelpcdn.com/bphoto/sEgrRrMVkWaky7Yc7dvdgg/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/hunan-london?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 38, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.5, 'coordinates': {'latitude': 51.490493, 'longitude': -0.1526547}, 'transactions': [], 'price': '££££', 'location': {'address1': '51 Pimlico Road', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'SW1W 8NE', 'country': 'GB', 'state': 'XGL', 'display_address': ['51 Pimlico Road', 'London SW1W 8NE', 'United Kingdom']}, 'phone': '+442077305712', 'display_phone': '+44 20 7730 5712', 'distance': 2741.6022690860036}, {'id': 'MpdG-D0nKwGEZp0ApTtBaA', 'alias': 'barshu-london-2', 'name': 'Barshu', 'image_url': 'https://s3-media2.fl.yelpcdn.com/bphoto/jaGznOhEvqqcJXKCYt12Ug/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/barshu-london-2?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 96, 'categories': [{'alias': 'szechuan', 'title': 'Szechuan'}], 'rating': 4.0, 'coordinates': {'latitude': 51.512835, 'longitude': -0.130857}, 'transactions': [], 'price': '£££', 'location': {'address1': '28 Frith Street', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'W1D 5LF', 'country': 'GB', 'state': 'XGL', 'display_address': ['28 Frith Street', 'London W1D 5LF', 'United Kingdom']}, 'phone': '+442072878822', 'display_phone': '+44 20 7287 8822', 'distance': 357.1885184880618}, {'id': '5-_YNjtvoG-oYt1qAO3tVw', 'alias': 'bugis-street-brasserie-london', 'name': 'Bugis Street Brasserie', 'image_url': 'https://s3-media1.fl.yelpcdn.com/bphoto/kgtAwZ3oF2wh05ndSzQ1zA/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/bugis-street-brasserie-london?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 43, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}, {'alias': 'singaporean', 'title': 'Singaporean'}], 'rating': 4.0, 'coordinates': {'latitude': 51.4936621211568, 'longitude': -0.183931280273902}, 'transactions': [], 'price': '££', 'location': {'address1': 'Millennium Hotels & Resorts', 'address2': '4-18 Harrington Gardens', 'address3': '', 'city': 'London', 'zip_code': 'SW7 4LH', 'country': 'GB', 'state': 'XGL', 'display_address': ['Millennium Hotels & Resorts', '4-18 Harrington Gardens', 'London SW7 4LH', 'United Kingdom']}, 'phone': '+442073316211', 'display_phone': '+44 20 7331 6211', 'distance': 3946.1405823998143}, {'id': '3ea8x8r0gsVy8ltQycldsA', 'alias': 'gold-mine-london', 'name': 'Gold Mine', 'image_url': 'https://s3-media2.fl.yelpcdn.com/bphoto/aihm1QdPS5Mq79T_9rP7tA/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/gold-mine-london?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 66, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.0, 'coordinates': {'latitude': 51.5133018493652, 'longitude': -0.187491998076439}, 'transactions': [], 'price': '££', 'location': {'address1': '102 Queensway', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'W2 3RR', 'country': 'GB', 'state': 'XGL', 'display_address': ['102 Queensway', 'London W2 3RR', 'United Kingdom']}, 'phone': '+442077928331', 'display_phone': '+44 20 7792 8331', 'distance': 3571.4713192257427}], 'total': 1200, 'region': {'center': {'longitude': -0.135955810546875, 'latitude': 51.51283552118349}}}
 
 
-Success! As you can see, the response.text is the html code for the given url that we requested. In the background, this forms the basis for web browsers themselves. Every time you put in a new url or click on a link your computer makes a get request for that particular page and then the browser itself renders that page into a visual display on screen.
+### JSON .. again ! 
 
-### OAuth  
-Some requests are a bit more complicated. Often, websites require identity verification such as logins. This helps a variety of issues such as privacy concerns, limiting access to content and tracking users history. Going forward, OAuth has furthered this idea by allowing third parties such as apps access to user information without providing the underlying password itself.
-
-In the words of the Internet Engineering Task Force, "The OAuth 2.0 authorization framework enables a third-party
-application to obtain limited access to an HTTP service, either on
-behalf of a resource owner by orchestrating an approval interaction
-between the resource owner and the HTTP service, or by allowing the
-third-party application to obtain access on its own behalf.  This
-specification replaces and obsoletes the OAuth 1.0 protocol described
-in RFC 5849."
-
-See https://oauth.net/2/ or https://tools.ietf.org/html/rfc6749 for more details.
-
-Alternatively, for a specific case check out [Yelp's authentication guide](https://www.yelp.com/developers/documentation/v3/authentication#where-is-my-client-secret-going), which we're about to check out!
-
-#### Access Tokens
-With that, lets go grab an access token from an API site and make some API calls!
-Point your browser over to this [yelp page](https://www.yelp.com/developers/v3/manage_app) and start creating an app in order to obtain and api access token:
-
-![](./images/yelp_app.png)
-
-Now it's time to start making some api calls!
-
-
-```python
-#As a general rule of thumb, don't store passwords in a main file like this!
-#Instead, you would normally store those passwords under a sub file like passwords.py which you would then import.
-#This code snippet might not work if repeatedly used.
-client_id = 'xNHtXRpNa-MXGFJJTHHUvw'
-api_key = 'bIufucVD4DflHdSAhnJF7wJuBmJQAsnOdlKX2XgNZQkGZl8TcyFrGy0dtmBstVBVezqv-myfGeY7a6GZG4KQNOLGdD8YFVkTSLW0zfFc0MkiHCcyHc7urlbf_uMiW3Yx'
-```
-
-#### Example Request
-https://www.yelp.com/developers/documentation/v3/get_started
-
-
-```python
-term = 'Mexican'
-location = 'Astoria NY'
-SEARCH_LIMIT = 10
-
-url = 'https://api.yelp.com/v3/businesses/search'
-
-headers = {
-        'Authorization': 'Bearer {}'.format(api_key),
-    }
-
-url_params = {
-                'term': term.replace(' ', '+'),
-                'location': location.replace(' ', '+'),
-                'limit': SEARCH_LIMIT
-            }
-response = requests.get(url, headers=headers, params=url_params)
-print(response)
-print(type(response.text))
-print(response.text[:1000])
-```
-
-    <Response [200]>
-    <class 'str'>
-    {"businesses": [{"id": "jeWIYbgBho9vBDhc5S1xvg", "alias": "holy-guacamole-astoria", "name": "Holy Guacamole", "image_url": "https://s3-media1.fl.yelpcdn.com/bphoto/8IjT2jd7vKDSOmtdXPI-Zg/o.jpg", "is_closed": false, "url": "https://www.yelp.com/biz/holy-guacamole-astoria?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw", "review_count": 108, "categories": [{"alias": "mexican", "title": "Mexican"}, {"alias": "bars", "title": "Bars"}], "rating": 4.0, "coordinates": {"latitude": 40.756621, "longitude": -73.929336}, "transactions": ["delivery", "pickup"], "price": "$$", "location": {"address1": "3555 31st St", "address2": "", "address3": "", "city": "Astoria", "zip_code": "11106", "country": "US", "state": "NY", "display_address": ["3555 31st St", "Astoria, NY 11106"]}, "phone": "+19178327261", "display_phone": "(917) 832-7261", "distance": 1290.4274875130448}, {"id": "6AJwsgXr7YwsqneGVAdgzw", "alias": "las-c
-
-
-#### JSON
-MMMM Look at that! We have a nice nifty little return now! As you can see, the contents of the response is formatted as a string but what kind of data structures does this remind you of?  
+We have a nice nifty little return now! As you can see, the contents of the response is formatted as a string but what kind of data structures does this remind you of?  
 
 To start there's the outer curly brackets:  
-{"businesses":   
+
+#### {"businesses":   
 
 Hopefully you're thinking 'hey that's just like a python dictionary!'
 
 Then within that we have what appears to be a list of dictionaries:  
-[{"id": "jeWIYbgBho9vBDhc5S1xvg",
 
-This response is an example of a json (Javascript Object Notation) format.
-You can read more about json [here](https://www.json.org/), but it's pretty similar to the data structures you've already seen in python.
+#### {"id": "jeWIYbgBho9vBDhc5S1xvg",
 
+This response is an example of a JSON (JavaScript Object Notation) format that we've seen so many times before. We can simply treat it as a dictionary and process it further. 
 
-## DataFrames and Pandas
-We can also take json and convert it into a **DataFrame**, a spreadsheet style object (ala excel), using the **Pandas** package: 
+### Inspect the values for all the keys in the response
 
 
 ```python
-#import the package under an alias (short typing in the future)
-import pandas as pd
+# inspect the key value pairs to understand the strcuture of data 
+
+
 ```
 
-
-```python
-#Create a dataframe
-df = pd.DataFrame.from_dict(response.json())
-```
-
-
-    ---------------------------------------------------------------------------
-
-    ValueError                                Traceback (most recent call last)
-
-    <ipython-input-36-3fd8d17ec009> in <module>()
-          1 #Create a dataframe
-    ----> 2 df = pd.DataFrame.from_dict(response.json())
-    
-
-    ~/anaconda3/lib/python3.6/site-packages/pandas/core/frame.py in from_dict(cls, data, orient, dtype, columns)
-        983             raise ValueError('only recognize index or columns for orient')
-        984 
-    --> 985         return cls(data, index=index, columns=columns, dtype=dtype)
-        986 
-        987     def to_dict(self, orient='dict', into=dict):
+    businesses
+    <class 'dict_values'>
+    total
+    <class 'dict_values'>
+    region
+    <class 'dict_values'>
 
 
-    ~/anaconda3/lib/python3.6/site-packages/pandas/core/frame.py in __init__(self, data, index, columns, dtype, copy)
-        346                                  dtype=dtype, copy=copy)
-        347         elif isinstance(data, dict):
-    --> 348             mgr = self._init_dict(data, index, columns, dtype=dtype)
-        349         elif isinstance(data, ma.MaskedArray):
-        350             import numpy.ma.mrecords as mrecords
-
-
-    ~/anaconda3/lib/python3.6/site-packages/pandas/core/frame.py in _init_dict(self, data, index, columns, dtype)
-        457             arrays = [data[k] for k in keys]
-        458 
-    --> 459         return _arrays_to_mgr(arrays, data_names, index, columns, dtype=dtype)
-        460 
-        461     def _init_ndarray(self, values, index, columns, dtype=None, copy=False):
-
-
-    ~/anaconda3/lib/python3.6/site-packages/pandas/core/frame.py in _arrays_to_mgr(arrays, arr_names, index, columns, dtype)
-       7313     # figure out the index, if necessary
-       7314     if index is None:
-    -> 7315         index = extract_index(arrays)
-       7316 
-       7317     # don't force copy because getting jammed in an ndarray anyway
-
-
-    ~/anaconda3/lib/python3.6/site-packages/pandas/core/frame.py in extract_index(data)
-       7362 
-       7363             if have_dicts:
-    -> 7364                 raise ValueError('Mixing dicts with non-Series may lead to '
-       7365                                  'ambiguous ordering.')
-       7366 
-
-
-    ValueError: Mixing dicts with non-Series may lead to ambiguous ordering.
-
-
-### Debugging
 Whoops, what's going on here!? Well, notice from our previous preview of the response that we saw there were a hierarhcy within the response. Let's begin to investigate further to see what the problem is.
 
-First, recall that the overall strucutre of the response was a dictionary. Let's look at what those values are.
+First, recall that the overall strucutre of the response was a dictionary. Let's look at what the keys are:
 
 
 ```python
-response.json().keys()
+response.keys()
 ```
 
 
@@ -278,131 +146,53 @@ response.json().keys()
 
 
 
-Now let's go a bit further and start to preview what's stored in each of the values for these keys.
+Consult the Yelp API and learn what value is carried in each key. 
+
+#### Continue to preview these keys  further to get a little better acquainted. 
 
 
 ```python
-for key in response.json().keys():
-    print(key)
-    value = response.json()[key] #Use standard dictionary formatting
-    print(type(value)) #What type is it?
-    print('\n\n') #Seperate out data
+print('BUSINESS:', response['businesses'][0])
+
+print('REGION:', response['region'])
+
+print('TOTAL :',response['total'])
 ```
 
-    businesses
-    <class 'list'>
-    
-    
-    
-    total
-    <class 'int'>
-    
-    
-    
-    region
-    <class 'dict'>
-    
-    
-    
+    BUSINESS: {'id': 'QE5aa5N-dbfvafLsjn7TVg', 'alias': 'bamboo-flute-fitzrovia', 'name': 'Bamboo Flute', 'image_url': 'https://s3-media3.fl.yelpcdn.com/bphoto/kYQZjHmzt8zy1634OsAsxQ/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/bamboo-flute-fitzrovia?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 29, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.5, 'coordinates': {'latitude': 51.5228746, 'longitude': -0.1418939}, 'transactions': [], 'price': '£', 'location': {'address1': '145 Cleveland Street', 'address2': '', 'address3': '', 'city': 'Fitzrovia', 'zip_code': 'W1T 6QH', 'country': 'GB', 'state': 'XGL', 'display_address': ['145 Cleveland Street', 'Fitzrovia W1T 6QH', 'United Kingdom']}, 'phone': '+442073872738', 'display_phone': '+44 20 7387 2738', 'distance': 1189.5082547156321}
+    REGION: {'center': {'longitude': -0.135955810546875, 'latitude': 51.51283552118349}}
+    TOTAL : 1200
 
 
-##### Let's continue to preview these further to get a little better acquainted.
+This makes more sense, so we are mainly interested in the `businesses` for our needs. 
+
+### Print the names of businesses and included ratings 
 
 
 ```python
-response.json()['businesses'][:2]
+# Code here 
 ```
 
+    bamboo-flute-fitzrovia - 4.5
+    hakkasan-london-3 - 4.0
+    yauatcha-london-7 - 4.0
+    lanzhou-noodle-bar-london - 4.0
+    hakkasan-mayfair-london-2 - 4.0
+    silk-road-london-2 - 4.5
+    hunan-london - 4.5
+    barshu-london-2 - 4.0
+    bugis-street-brasserie-london - 4.0
+    gold-mine-london - 4.0
 
 
-
-    [{'id': 'jeWIYbgBho9vBDhc5S1xvg',
-      'alias': 'holy-guacamole-astoria',
-      'name': 'Holy Guacamole',
-      'image_url': 'https://s3-media1.fl.yelpcdn.com/bphoto/8IjT2jd7vKDSOmtdXPI-Zg/o.jpg',
-      'is_closed': False,
-      'url': 'https://www.yelp.com/biz/holy-guacamole-astoria?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw',
-      'review_count': 108,
-      'categories': [{'alias': 'mexican', 'title': 'Mexican'},
-       {'alias': 'bars', 'title': 'Bars'}],
-      'rating': 4.0,
-      'coordinates': {'latitude': 40.756621, 'longitude': -73.929336},
-      'transactions': ['delivery', 'pickup'],
-      'price': '$$',
-      'location': {'address1': '3555 31st St',
-       'address2': '',
-       'address3': '',
-       'city': 'Astoria',
-       'zip_code': '11106',
-       'country': 'US',
-       'state': 'NY',
-       'display_address': ['3555 31st St', 'Astoria, NY 11106']},
-      'phone': '+19178327261',
-      'display_phone': '(917) 832-7261',
-      'distance': 1290.4274875130448},
-     {'id': '6AJwsgXr7YwsqneGVAdgzw',
-      'alias': 'las-catrinas-mexican-bar-and-eatery-astoria',
-      'name': 'Las Catrinas Mexican Bar & Eatery',
-      'image_url': 'https://s3-media3.fl.yelpcdn.com/bphoto/CKRiZUoyTUjs79bWnDEEpg/o.jpg',
-      'is_closed': False,
-      'url': 'https://www.yelp.com/biz/las-catrinas-mexican-bar-and-eatery-astoria?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw',
-      'review_count': 163,
-      'categories': [{'alias': 'mexican', 'title': 'Mexican'},
-       {'alias': 'cocktailbars', 'title': 'Cocktail Bars'}],
-      'rating': 4.0,
-      'coordinates': {'latitude': 40.7614214682633,
-       'longitude': -73.9246649456171},
-      'transactions': ['delivery', 'pickup'],
-      'price': '$$',
-      'location': {'address1': '32-02 Broadway',
-       'address2': '',
-       'address3': None,
-       'city': 'Astoria',
-       'zip_code': '11106',
-       'country': 'US',
-       'state': 'NY',
-       'display_address': ['32-02 Broadway', 'Astoria, NY 11106']},
-      'phone': '+19177450969',
-      'display_phone': '(917) 745-0969',
-      'distance': 642.5257707161409}]
-
-
+Great, now are are getting somewhere. It is a good idea at this stage to store this information as a dataframe for processing further. 
+### Create a Pandas dataframe for contents of `businesses`
+* Check the number of records in the dataframe
+* Inspect the columns and head
 
 
 ```python
-response.json()['total']
-```
-
-
-
-
-    638
-
-
-
-
-```python
-response.json()['region']
-```
-
-
-
-
-    {'center': {'longitude': -73.92219543457031, 'latitude': 40.76688875374591}}
-
-
-
-**As you can see, we're primarily interested in the 'bussinesses' entry. **   
-
-**Let's go ahead and create a dataframe from that.**
-
-
-```python
-df = pd.DataFrame.from_dict(response.json()['businesses'])
-print(len(df)) #Print how many rows
-print(df.columns) #Print column names
-df.head() #Previews the first five rows. 
-#You could also write df.head(10) to preview 10 rows or df.tail() to see the bottom
+# Code here 
 ```
 
     10
@@ -454,98 +244,98 @@ df.head() #Previews the first five rows.
   <tbody>
     <tr>
       <th>0</th>
-      <td>holy-guacamole-astoria</td>
-      <td>[{'alias': 'mexican', 'title': 'Mexican'}, {'a...</td>
-      <td>{'latitude': 40.756621, 'longitude': -73.929336}</td>
-      <td>(917) 832-7261</td>
-      <td>1290.427488</td>
-      <td>jeWIYbgBho9vBDhc5S1xvg</td>
-      <td>https://s3-media1.fl.yelpcdn.com/bphoto/8IjT2j...</td>
+      <td>bamboo-flute-fitzrovia</td>
+      <td>[{'alias': 'chinese', 'title': 'Chinese'}]</td>
+      <td>{'latitude': 51.5228746, 'longitude': -0.1418939}</td>
+      <td>+44 20 7387 2738</td>
+      <td>1189.508255</td>
+      <td>QE5aa5N-dbfvafLsjn7TVg</td>
+      <td>https://s3-media3.fl.yelpcdn.com/bphoto/kYQZjH...</td>
       <td>False</td>
-      <td>{'address1': '3555 31st St', 'address2': '', '...</td>
-      <td>Holy Guacamole</td>
-      <td>+19178327261</td>
-      <td>$$</td>
-      <td>4.0</td>
-      <td>108</td>
-      <td>[delivery, pickup]</td>
-      <td>https://www.yelp.com/biz/holy-guacamole-astori...</td>
+      <td>{'address1': '145 Cleveland Street', 'address2...</td>
+      <td>Bamboo Flute</td>
+      <td>+442073872738</td>
+      <td>£</td>
+      <td>4.5</td>
+      <td>29</td>
+      <td>[]</td>
+      <td>https://www.yelp.com/biz/bamboo-flute-fitzrovi...</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>las-catrinas-mexican-bar-and-eatery-astoria</td>
-      <td>[{'alias': 'mexican', 'title': 'Mexican'}, {'a...</td>
-      <td>{'latitude': 40.7614214682633, 'longitude': -7...</td>
-      <td>(917) 745-0969</td>
-      <td>642.525771</td>
-      <td>6AJwsgXr7YwsqneGVAdgzw</td>
-      <td>https://s3-media3.fl.yelpcdn.com/bphoto/CKRiZU...</td>
+      <td>hakkasan-london-3</td>
+      <td>[{'alias': 'cantonese', 'title': 'Cantonese'}]</td>
+      <td>{'latitude': 51.5171482803943, 'longitude': -0...</td>
+      <td>+44 20 7927 7000</td>
+      <td>558.965004</td>
+      <td>h2cCoDNQOPd51HFwvuAGNg</td>
+      <td>https://s3-media2.fl.yelpcdn.com/bphoto/IcS9yz...</td>
       <td>False</td>
-      <td>{'address1': '32-02 Broadway', 'address2': '',...</td>
-      <td>Las Catrinas Mexican Bar &amp; Eatery</td>
-      <td>+19177450969</td>
-      <td>$$</td>
+      <td>{'address1': '8 Hanway Place', 'address2': '',...</td>
+      <td>Hakkasan</td>
+      <td>+442079277000</td>
+      <td>££££</td>
       <td>4.0</td>
-      <td>163</td>
-      <td>[delivery, pickup]</td>
-      <td>https://www.yelp.com/biz/las-catrinas-mexican-...</td>
+      <td>216</td>
+      <td>[]</td>
+      <td>https://www.yelp.com/biz/hakkasan-london-3?adj...</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>chela-and-garnacha-astoria</td>
-      <td>[{'alias': 'mexican', 'title': 'Mexican'}, {'a...</td>
-      <td>{'latitude': 40.7557171543477, 'longitude': -7...</td>
-      <td>(917) 832-6876</td>
-      <td>1316.297661</td>
-      <td>AUyKmFjpaVLwc3awfUnqgQ</td>
-      <td>https://s3-media1.fl.yelpcdn.com/bphoto/ChVbA1...</td>
+      <td>yauatcha-london-7</td>
+      <td>[{'alias': 'dimsum', 'title': 'Dim Sum'}, {'al...</td>
+      <td>{'latitude': 51.5137076071076, 'longitude': -0...</td>
+      <td>+44 20 7494 8888</td>
+      <td>112.598410</td>
+      <td>sYwBQ7mJYhB35nn-_SZstQ</td>
+      <td>https://s3-media4.fl.yelpcdn.com/bphoto/K7D6nw...</td>
       <td>False</td>
-      <td>{'address1': '33-09 36th Ave', 'address2': '',...</td>
-      <td>Chela &amp; Garnacha</td>
-      <td>+19178326876</td>
-      <td>$$</td>
-      <td>4.5</td>
-      <td>288</td>
-      <td>[delivery, pickup]</td>
-      <td>https://www.yelp.com/biz/chela-and-garnacha-as...</td>
+      <td>{'address1': '15-17 Broadwick Street', 'addres...</td>
+      <td>Yauatcha</td>
+      <td>+442074948888</td>
+      <td>£££</td>
+      <td>4.0</td>
+      <td>456</td>
+      <td>[]</td>
+      <td>https://www.yelp.com/biz/yauatcha-london-7?adj...</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>de-mole-astoria-astoria</td>
-      <td>[{'alias': 'mexican', 'title': 'Mexican'}]</td>
-      <td>{'latitude': 40.7625999, 'longitude': -73.9129...</td>
-      <td>(718) 777-1655</td>
-      <td>917.683267</td>
-      <td>jzVv_21473lAMYXIhVbuTA</td>
-      <td>https://s3-media1.fl.yelpcdn.com/bphoto/v8jXvZ...</td>
+      <td>lanzhou-noodle-bar-london</td>
+      <td>[{'alias': 'chinese', 'title': 'Chinese'}, {'a...</td>
+      <td>{'latitude': 51.5116034713013, 'longitude': -0...</td>
+      <td>+44 20 7467 4546</td>
+      <td>578.474355</td>
+      <td>pdFiFtol9YI__9ROOXUIYA</td>
+      <td>https://s3-media4.fl.yelpcdn.com/bphoto/IKy91e...</td>
       <td>False</td>
-      <td>{'address1': '4220 30th Ave', 'address2': '', ...</td>
-      <td>De Mole Astoria</td>
-      <td>+17187771655</td>
-      <td>$$</td>
+      <td>{'address1': '33 Cranbourne Street', 'address2...</td>
+      <td>Lanzhou Noodle Bar</td>
+      <td>+442074674546</td>
+      <td>£</td>
       <td>4.0</td>
-      <td>314</td>
-      <td>[delivery, pickup]</td>
-      <td>https://www.yelp.com/biz/de-mole-astoria-astor...</td>
+      <td>300</td>
+      <td>[]</td>
+      <td>https://www.yelp.com/biz/lanzhou-noodle-bar-lo...</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>maizal-restaurant-and-tequila-bar-astoria-2</td>
-      <td>[{'alias': 'mexican', 'title': 'Mexican'}, {'a...</td>
-      <td>{'latitude': 40.759331, 'longitude': -73.926035}</td>
-      <td>(718) 406-9431</td>
-      <td>900.451091</td>
-      <td>QIsFsiOP3H_NkgeWST7GPA</td>
-      <td>https://s3-media4.fl.yelpcdn.com/bphoto/VOGwDm...</td>
+      <td>hakkasan-mayfair-london-2</td>
+      <td>[{'alias': 'chinese', 'title': 'Chinese'}]</td>
+      <td>{'latitude': 51.5103202323384, 'longitude': -0...</td>
+      <td>+44 20 7907 1888</td>
+      <td>681.445072</td>
+      <td>chEEcQbc8PbidTeXK34H9g</td>
+      <td>https://s3-media4.fl.yelpcdn.com/bphoto/7l0tXt...</td>
       <td>False</td>
-      <td>{'address1': '3207 34th Ave', 'address2': None...</td>
-      <td>Maizal Restaurant &amp; Tequila Bar</td>
-      <td>+17184069431</td>
-      <td>$$</td>
+      <td>{'address1': '17 Bruton Street', 'address2': '...</td>
+      <td>Hakkasan Mayfair</td>
+      <td>+442079071888</td>
+      <td>££££</td>
       <td>4.0</td>
-      <td>257</td>
-      <td>[delivery, pickup]</td>
-      <td>https://www.yelp.com/biz/maizal-restaurant-and...</td>
+      <td>116</td>
+      <td>[]</td>
+      <td>https://www.yelp.com/biz/hakkasan-mayfair-lond...</td>
     </tr>
   </tbody>
 </table>
@@ -553,68 +343,62 @@ df.head() #Previews the first five rows.
 
 
 
-https://www.yelp.com/developers/documentation/v3/get_started
-https://developers.google.com/maps/documentation/
-    
-And for a more complete code snippet check out:
-https://github.com/Yelp/yelp-fusion/blob/master/fusion/python/sample.py
+This is fantastic. We have successfully learned a new API , made requests to it, recieved and studied the response and stored the results in a dataframe and can now enjoy all the goodness of Pandas. Thats quite a bit of data engineering. 
 
-#### Visualization
+### Visualize the location from search query
+The `region` key in the response carries the geographical information for the region searched.
+* Get the latitude / longitude information from `region`
+* Create a folium map with these coordinates. 
+* Use a zoom start value = 13
 
 
 ```python
 import folium
+
+# Code here
 ```
+
+Expected Output:
+![](london.png)
+
+Nice. We can now extract the coordinate information for each business and plot it on this map.
+
+### Get the business coordinates from dataframe for each business and plot on the map above
 
 
 ```python
-#Retrieve the Latitude and Longitude from the Yelp Response
-lat_long = response.json()['region']['center']
-lat = lat_long['latitude']
-long = lat_long['longitude']
-
-#Create a map of the area
-yelp_map = folium.Map([lat, long])
-yelp_map
+# Code here 
 ```
 
+Expected output:
+![](markers.png)
+
+Kool so we have everything in place but the visualization is still not very *Informative* so to speak. You can't tell which marker represents which business and also other information on business like rating, cost, links to user reviews etc. is still not visible. SO its geographical , but not exactly an Information System yet as you cant make any decisions on this information.  Here's as example of what it possible can look like
+![](out.png)
 
 
+For this you need to understand `folium.popup()` which let's you click on a marker to show a pop up window. This window acts more like an HTML page so you can easily format the information you present in the popup using following values:
+* The official business logo/image:  `image_url`
+* Name of the Business: `name`
+* Price (how expensive): `price`
+* Links to user reviews on Yelp: `url`
 
-<div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><iframe src="data:text/html;charset=utf-8;base64,PCFET0NUWVBFIGh0bWw+CjxoZWFkPiAgICAKICAgIDxtZXRhIGh0dHAtZXF1aXY9ImNvbnRlbnQtdHlwZSIgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PVVURi04IiAvPgogICAgPHNjcmlwdD5MX1BSRUZFUl9DQU5WQVMgPSBmYWxzZTsgTF9OT19UT1VDSCA9IGZhbHNlOyBMX0RJU0FCTEVfM0QgPSBmYWxzZTs8L3NjcmlwdD4KICAgIDxzY3JpcHQgc3JjPSJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL2xlYWZsZXRAMS4yLjAvZGlzdC9sZWFmbGV0LmpzIj48L3NjcmlwdD4KICAgIDxzY3JpcHQgc3JjPSJodHRwczovL2FqYXguZ29vZ2xlYXBpcy5jb20vYWpheC9saWJzL2pxdWVyeS8xLjExLjEvanF1ZXJ5Lm1pbi5qcyI+PC9zY3JpcHQ+CiAgICA8c2NyaXB0IHNyYz0iaHR0cHM6Ly9tYXhjZG4uYm9vdHN0cmFwY2RuLmNvbS9ib290c3RyYXAvMy4yLjAvanMvYm9vdHN0cmFwLm1pbi5qcyI+PC9zY3JpcHQ+CiAgICA8c2NyaXB0IHNyYz0iaHR0cHM6Ly9jZG5qcy5jbG91ZGZsYXJlLmNvbS9hamF4L2xpYnMvTGVhZmxldC5hd2Vzb21lLW1hcmtlcnMvMi4wLjIvbGVhZmxldC5hd2Vzb21lLW1hcmtlcnMuanMiPjwvc2NyaXB0PgogICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0IiBocmVmPSJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL2xlYWZsZXRAMS4yLjAvZGlzdC9sZWFmbGV0LmNzcyIvPgogICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0IiBocmVmPSJodHRwczovL21heGNkbi5ib290c3RyYXBjZG4uY29tL2Jvb3RzdHJhcC8zLjIuMC9jc3MvYm9vdHN0cmFwLm1pbi5jc3MiLz4KICAgIDxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iaHR0cHM6Ly9tYXhjZG4uYm9vdHN0cmFwY2RuLmNvbS9ib290c3RyYXAvMy4yLjAvY3NzL2Jvb3RzdHJhcC10aGVtZS5taW4uY3NzIi8+CiAgICA8bGluayByZWw9InN0eWxlc2hlZXQiIGhyZWY9Imh0dHBzOi8vbWF4Y2RuLmJvb3RzdHJhcGNkbi5jb20vZm9udC1hd2Vzb21lLzQuNi4zL2Nzcy9mb250LWF3ZXNvbWUubWluLmNzcyIvPgogICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0IiBocmVmPSJodHRwczovL2NkbmpzLmNsb3VkZmxhcmUuY29tL2FqYXgvbGlicy9MZWFmbGV0LmF3ZXNvbWUtbWFya2Vycy8yLjAuMi9sZWFmbGV0LmF3ZXNvbWUtbWFya2Vycy5jc3MiLz4KICAgIDxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iaHR0cHM6Ly9yYXdnaXQuY29tL3B5dGhvbi12aXN1YWxpemF0aW9uL2ZvbGl1bS9tYXN0ZXIvZm9saXVtL3RlbXBsYXRlcy9sZWFmbGV0LmF3ZXNvbWUucm90YXRlLmNzcyIvPgogICAgPHN0eWxlPmh0bWwsIGJvZHkge3dpZHRoOiAxMDAlO2hlaWdodDogMTAwJTttYXJnaW46IDA7cGFkZGluZzogMDt9PC9zdHlsZT4KICAgIDxzdHlsZT4jbWFwIHtwb3NpdGlvbjphYnNvbHV0ZTt0b3A6MDtib3R0b206MDtyaWdodDowO2xlZnQ6MDt9PC9zdHlsZT4KICAgIAogICAgICAgICAgICA8c3R5bGU+ICNtYXBfOTMwZTc5MjcxNDcwNGY1ZGJkOTYzMmZkZjA1ZTZiNmEgewogICAgICAgICAgICAgICAgcG9zaXRpb24gOiByZWxhdGl2ZTsKICAgICAgICAgICAgICAgIHdpZHRoIDogMTAwLjAlOwogICAgICAgICAgICAgICAgaGVpZ2h0OiAxMDAuMCU7CiAgICAgICAgICAgICAgICBsZWZ0OiAwLjAlOwogICAgICAgICAgICAgICAgdG9wOiAwLjAlOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICA8L3N0eWxlPgogICAgICAgIAo8L2hlYWQ+Cjxib2R5PiAgICAKICAgIAogICAgICAgICAgICA8ZGl2IGNsYXNzPSJmb2xpdW0tbWFwIiBpZD0ibWFwXzkzMGU3OTI3MTQ3MDRmNWRiZDk2MzJmZGYwNWU2YjZhIiA+PC9kaXY+CiAgICAgICAgCjwvYm9keT4KPHNjcmlwdD4gICAgCiAgICAKCiAgICAgICAgICAgIAogICAgICAgICAgICAgICAgdmFyIGJvdW5kcyA9IG51bGw7CiAgICAgICAgICAgIAoKICAgICAgICAgICAgdmFyIG1hcF85MzBlNzkyNzE0NzA0ZjVkYmQ5NjMyZmRmMDVlNmI2YSA9IEwubWFwKAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJ21hcF85MzBlNzkyNzE0NzA0ZjVkYmQ5NjMyZmRmMDVlNmI2YScsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB7Y2VudGVyOiBbNDAuNzY2ODg4NzUzNzQ1OTEsLTczLjkyMjE5NTQzNDU3MDMxXSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHpvb206IDEwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbWF4Qm91bmRzOiBib3VuZHMsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsYXllcnM6IFtdLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd29ybGRDb3B5SnVtcDogZmFsc2UsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjcnM6IEwuQ1JTLkVQU0czODU3CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0pOwogICAgICAgICAgICAKICAgICAgICAKICAgIAogICAgICAgICAgICB2YXIgdGlsZV9sYXllcl84OThiOWEwMzhlNDk0YzczOTA1OWNhY2U2YWQwNjQwYiA9IEwudGlsZUxheWVyKAogICAgICAgICAgICAgICAgJ2h0dHBzOi8ve3N9LnRpbGUub3BlbnN0cmVldG1hcC5vcmcve3p9L3t4fS97eX0ucG5nJywKICAgICAgICAgICAgICAgIHsKICAiYXR0cmlidXRpb24iOiBudWxsLAogICJkZXRlY3RSZXRpbmEiOiBmYWxzZSwKICAibWF4Wm9vbSI6IDE4LAogICJtaW5ab29tIjogMSwKICAibm9XcmFwIjogZmFsc2UsCiAgInN1YmRvbWFpbnMiOiAiYWJjIgp9CiAgICAgICAgICAgICAgICApLmFkZFRvKG1hcF85MzBlNzkyNzE0NzA0ZjVkYmQ5NjMyZmRmMDVlNmI2YSk7CiAgICAgICAgCjwvc2NyaXB0Pg==" style="position:absolute;width:100%;height:100%;left:0;top:0;border:none !important;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe></div></div>
+Doing this in HTML is not required , so we recommend that you first try to put in basic information in the popups as just text. As a next stage , you can start changing into HTML code to make it visually more appealing.
 
+### Attempt to recreate the interactive visualization shown above.
 
-
-#### Adding the Mexican Restaurants
+Here's a good resource with code examples on [how to create folium popups](https://github.com/python-visualization/folium/blob/master/examples/Popups.ipynb)
 
 
 ```python
-folium.Marker?
+# Code here 
 ```
 
+Wow . An Interactive Geographical information System backed by live data through API calling. 
 
-```python
-for row in df.index:
-    lat_long = df['coordinates'][row]
-    lat = lat_long['latitude']
-    long = lat_long['longitude']
-    name = df['name'][row]
-    rating = df['rating'][row]
-    price = df['price'][row]
-    details = '{} Price: {} Rating:{}'.format(name,price,rating)
-    marker = folium.Marker([lat, long])
-    marker.add_to(yelp_map)
-yelp_map
-```
+<img src="star.jpg" width=300>
 
-
-
-
-<div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><iframe src="data:text/html;charset=utf-8;base64,PCFET0NUWVBFIGh0bWw+CjxoZWFkPiAgICAKICAgIDxtZXRhIGh0dHAtZXF1aXY9ImNvbnRlbnQtdHlwZSIgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PVVURi04IiAvPgogICAgPHNjcmlwdD5MX1BSRUZFUl9DQU5WQVMgPSBmYWxzZTsgTF9OT19UT1VDSCA9IGZhbHNlOyBMX0RJU0FCTEVfM0QgPSBmYWxzZTs8L3NjcmlwdD4KICAgIDxzY3JpcHQgc3JjPSJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL2xlYWZsZXRAMS4yLjAvZGlzdC9sZWFmbGV0LmpzIj48L3NjcmlwdD4KICAgIDxzY3JpcHQgc3JjPSJodHRwczovL2FqYXguZ29vZ2xlYXBpcy5jb20vYWpheC9saWJzL2pxdWVyeS8xLjExLjEvanF1ZXJ5Lm1pbi5qcyI+PC9zY3JpcHQ+CiAgICA8c2NyaXB0IHNyYz0iaHR0cHM6Ly9tYXhjZG4uYm9vdHN0cmFwY2RuLmNvbS9ib290c3RyYXAvMy4yLjAvanMvYm9vdHN0cmFwLm1pbi5qcyI+PC9zY3JpcHQ+CiAgICA8c2NyaXB0IHNyYz0iaHR0cHM6Ly9jZG5qcy5jbG91ZGZsYXJlLmNvbS9hamF4L2xpYnMvTGVhZmxldC5hd2Vzb21lLW1hcmtlcnMvMi4wLjIvbGVhZmxldC5hd2Vzb21lLW1hcmtlcnMuanMiPjwvc2NyaXB0PgogICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0IiBocmVmPSJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL2xlYWZsZXRAMS4yLjAvZGlzdC9sZWFmbGV0LmNzcyIvPgogICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0IiBocmVmPSJodHRwczovL21heGNkbi5ib290c3RyYXBjZG4uY29tL2Jvb3RzdHJhcC8zLjIuMC9jc3MvYm9vdHN0cmFwLm1pbi5jc3MiLz4KICAgIDxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iaHR0cHM6Ly9tYXhjZG4uYm9vdHN0cmFwY2RuLmNvbS9ib290c3RyYXAvMy4yLjAvY3NzL2Jvb3RzdHJhcC10aGVtZS5taW4uY3NzIi8+CiAgICA8bGluayByZWw9InN0eWxlc2hlZXQiIGhyZWY9Imh0dHBzOi8vbWF4Y2RuLmJvb3RzdHJhcGNkbi5jb20vZm9udC1hd2Vzb21lLzQuNi4zL2Nzcy9mb250LWF3ZXNvbWUubWluLmNzcyIvPgogICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0IiBocmVmPSJodHRwczovL2NkbmpzLmNsb3VkZmxhcmUuY29tL2FqYXgvbGlicy9MZWFmbGV0LmF3ZXNvbWUtbWFya2Vycy8yLjAuMi9sZWFmbGV0LmF3ZXNvbWUtbWFya2Vycy5jc3MiLz4KICAgIDxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iaHR0cHM6Ly9yYXdnaXQuY29tL3B5dGhvbi12aXN1YWxpemF0aW9uL2ZvbGl1bS9tYXN0ZXIvZm9saXVtL3RlbXBsYXRlcy9sZWFmbGV0LmF3ZXNvbWUucm90YXRlLmNzcyIvPgogICAgPHN0eWxlPmh0bWwsIGJvZHkge3dpZHRoOiAxMDAlO2hlaWdodDogMTAwJTttYXJnaW46IDA7cGFkZGluZzogMDt9PC9zdHlsZT4KICAgIDxzdHlsZT4jbWFwIHtwb3NpdGlvbjphYnNvbHV0ZTt0b3A6MDtib3R0b206MDtyaWdodDowO2xlZnQ6MDt9PC9zdHlsZT4KICAgIAogICAgICAgICAgICA8c3R5bGU+ICNtYXBfOTMwZTc5MjcxNDcwNGY1ZGJkOTYzMmZkZjA1ZTZiNmEgewogICAgICAgICAgICAgICAgcG9zaXRpb24gOiByZWxhdGl2ZTsKICAgICAgICAgICAgICAgIHdpZHRoIDogMTAwLjAlOwogICAgICAgICAgICAgICAgaGVpZ2h0OiAxMDAuMCU7CiAgICAgICAgICAgICAgICBsZWZ0OiAwLjAlOwogICAgICAgICAgICAgICAgdG9wOiAwLjAlOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICA8L3N0eWxlPgogICAgICAgIAo8L2hlYWQ+Cjxib2R5PiAgICAKICAgIAogICAgICAgICAgICA8ZGl2IGNsYXNzPSJmb2xpdW0tbWFwIiBpZD0ibWFwXzkzMGU3OTI3MTQ3MDRmNWRiZDk2MzJmZGYwNWU2YjZhIiA+PC9kaXY+CiAgICAgICAgCjwvYm9keT4KPHNjcmlwdD4gICAgCiAgICAKCiAgICAgICAgICAgIAogICAgICAgICAgICAgICAgdmFyIGJvdW5kcyA9IG51bGw7CiAgICAgICAgICAgIAoKICAgICAgICAgICAgdmFyIG1hcF85MzBlNzkyNzE0NzA0ZjVkYmQ5NjMyZmRmMDVlNmI2YSA9IEwubWFwKAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJ21hcF85MzBlNzkyNzE0NzA0ZjVkYmQ5NjMyZmRmMDVlNmI2YScsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB7Y2VudGVyOiBbNDAuNzY2ODg4NzUzNzQ1OTEsLTczLjkyMjE5NTQzNDU3MDMxXSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHpvb206IDEwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbWF4Qm91bmRzOiBib3VuZHMsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsYXllcnM6IFtdLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd29ybGRDb3B5SnVtcDogZmFsc2UsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjcnM6IEwuQ1JTLkVQU0czODU3CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0pOwogICAgICAgICAgICAKICAgICAgICAKICAgIAogICAgICAgICAgICB2YXIgdGlsZV9sYXllcl84OThiOWEwMzhlNDk0YzczOTA1OWNhY2U2YWQwNjQwYiA9IEwudGlsZUxheWVyKAogICAgICAgICAgICAgICAgJ2h0dHBzOi8ve3N9LnRpbGUub3BlbnN0cmVldG1hcC5vcmcve3p9L3t4fS97eX0ucG5nJywKICAgICAgICAgICAgICAgIHsKICAiYXR0cmlidXRpb24iOiBudWxsLAogICJkZXRlY3RSZXRpbmEiOiBmYWxzZSwKICAibWF4Wm9vbSI6IDE4LAogICJtaW5ab29tIjogMSwKICAibm9XcmFwIjogZmFsc2UsCiAgInN1YmRvbWFpbnMiOiAiYWJjIgp9CiAgICAgICAgICAgICAgICApLmFkZFRvKG1hcF85MzBlNzkyNzE0NzA0ZjVkYmQ5NjMyZmRmMDVlNmI2YSk7CiAgICAgICAgCiAgICAKCiAgICAgICAgICAgIHZhciBtYXJrZXJfMGI5ZGM3NzZmNDZiNGRlZmExZmUzZDhmMjZmZWQ1ZjEgPSBMLm1hcmtlcigKICAgICAgICAgICAgICAgIFs0MC43NTY2MjEsLTczLjkyOTMzNl0sCiAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgaWNvbjogbmV3IEwuSWNvbi5EZWZhdWx0KCkKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICApCiAgICAgICAgICAgICAgICAuYWRkVG8obWFwXzkzMGU3OTI3MTQ3MDRmNWRiZDk2MzJmZGYwNWU2YjZhKTsKICAgICAgICAgICAgCiAgICAKCiAgICAgICAgICAgIHZhciBtYXJrZXJfMDQ2MzM1MjNiMWYwNDJiMThhOGYzM2FhNzFkMDQxZWMgPSBMLm1hcmtlcigKICAgICAgICAgICAgICAgIFs0MC43NjE0MjE0NjgyNjMzLC03My45MjQ2NjQ5NDU2MTcxXSwKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICBpY29uOiBuZXcgTC5JY29uLkRlZmF1bHQoKQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgICAgIC5hZGRUbyhtYXBfOTMwZTc5MjcxNDcwNGY1ZGJkOTYzMmZkZjA1ZTZiNmEpOwogICAgICAgICAgICAKICAgIAoKICAgICAgICAgICAgdmFyIG1hcmtlcl84M2Q5ODhlZWEzYjY0ZDdlYTcxNDZlNjQ1ZmI4MDA4NCA9IEwubWFya2VyKAogICAgICAgICAgICAgICAgWzQwLjc1NTcxNzE1NDM0NzcsLTczLjkyNzgxMTI5MjQxMl0sCiAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgaWNvbjogbmV3IEwuSWNvbi5EZWZhdWx0KCkKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICApCiAgICAgICAgICAgICAgICAuYWRkVG8obWFwXzkzMGU3OTI3MTQ3MDRmNWRiZDk2MzJmZGYwNWU2YjZhKTsKICAgICAgICAgICAgCiAgICAKCiAgICAgICAgICAgIHZhciBtYXJrZXJfNzBlYTk1OTcyOTc2NGZlODhlMjc1NGQxODYxYjJkMGQgPSBMLm1hcmtlcigKICAgICAgICAgICAgICAgIFs0MC43NjI1OTk5LC03My45MTI5MDI4XSwKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICBpY29uOiBuZXcgTC5JY29uLkRlZmF1bHQoKQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgICAgIC5hZGRUbyhtYXBfOTMwZTc5MjcxNDcwNGY1ZGJkOTYzMmZkZjA1ZTZiNmEpOwogICAgICAgICAgICAKICAgIAoKICAgICAgICAgICAgdmFyIG1hcmtlcl81MmI4NzhjYzg2MDc0NjM1YTI4Yzk0YTMzZjFhMjRkNiA9IEwubWFya2VyKAogICAgICAgICAgICAgICAgWzQwLjc1OTMzMSwtNzMuOTI2MDM1XSwKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICBpY29uOiBuZXcgTC5JY29uLkRlZmF1bHQoKQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgICAgIC5hZGRUbyhtYXBfOTMwZTc5MjcxNDcwNGY1ZGJkOTYzMmZkZjA1ZTZiNmEpOwogICAgICAgICAgICAKICAgIAoKICAgICAgICAgICAgdmFyIG1hcmtlcl8xNTdkYTI0ZTZlMDM0ZWY4ODlhY2Y5YWQ0M2Y2YTY1NiA9IEwubWFya2VyKAogICAgICAgICAgICAgICAgWzQwLjc2MTIwMzM2Mzk0MjIsLTczLjkyNjE0MzY0NjI0MDJdLAogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIGljb246IG5ldyBMLkljb24uRGVmYXVsdCgpCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgKQogICAgICAgICAgICAgICAgLmFkZFRvKG1hcF85MzBlNzkyNzE0NzA0ZjVkYmQ5NjMyZmRmMDVlNmI2YSk7CiAgICAgICAgICAgIAogICAgCgogICAgICAgICAgICB2YXIgbWFya2VyXzhhNDg5ZDI4MmE1NjQ5N2E4MWUwNmRmNzdmNmM2NDI2ID0gTC5tYXJrZXIoCiAgICAgICAgICAgICAgICBbNDAuNzYxNjcsLTczLjkxMDldLAogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIGljb246IG5ldyBMLkljb24uRGVmYXVsdCgpCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgKQogICAgICAgICAgICAgICAgLmFkZFRvKG1hcF85MzBlNzkyNzE0NzA0ZjVkYmQ5NjMyZmRmMDVlNmI2YSk7CiAgICAgICAgICAgIAogICAgCgogICAgICAgICAgICB2YXIgbWFya2VyX2QwMWFiMWYzOGU4YjQ0OGNhYjM0YTI0YThiZTJmM2NjID0gTC5tYXJrZXIoCiAgICAgICAgICAgICAgICBbNDAuNzY4MzcsLTczLjkzMzAzXSwKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICBpY29uOiBuZXcgTC5JY29uLkRlZmF1bHQoKQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgICAgIC5hZGRUbyhtYXBfOTMwZTc5MjcxNDcwNGY1ZGJkOTYzMmZkZjA1ZTZiNmEpOwogICAgICAgICAgICAKICAgIAoKICAgICAgICAgICAgdmFyIG1hcmtlcl9jNmFlOGM0YzA0YTc0YzFlODFmMzRhZjg4NmNlNTE1MyA9IEwubWFya2VyKAogICAgICAgICAgICAgICAgWzQwLjc2MzE3NjgyMTEzNzksLTczLjkyODIyNjAxNTM0NDNdLAogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIGljb246IG5ldyBMLkljb24uRGVmYXVsdCgpCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgKQogICAgICAgICAgICAgICAgLmFkZFRvKG1hcF85MzBlNzkyNzE0NzA0ZjVkYmQ5NjMyZmRmMDVlNmI2YSk7CiAgICAgICAgICAgIAogICAgCgogICAgICAgICAgICB2YXIgbWFya2VyX2FjYzc2M2E0NWRhMjRiZDk5MTA3MjQ0ZjUzODZkOWI1ID0gTC5tYXJrZXIoCiAgICAgICAgICAgICAgICBbNDAuNzU1ODUsLTczLjkyNDQ3XSwKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICBpY29uOiBuZXcgTC5JY29uLkRlZmF1bHQoKQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgICAgIC5hZGRUbyhtYXBfOTMwZTc5MjcxNDcwNGY1ZGJkOTYzMmZkZjA1ZTZiNmEpOwogICAgICAgICAgICAKPC9zY3JpcHQ+" style="position:absolute;width:100%;height:100%;left:0;top:0;border:none !important;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe></div></div>
-
-
-
-#### API Thoughtstarters
+### More APIs to Checkout
 
 * Google Maps
 * Twitter
@@ -622,11 +406,6 @@ yelp_map
 * IBM's Watson
 * Yelp
 
-## Summary
+## Summary 
 
-Congratulations! We've covered a lot here! We started with HTTP requests, one of the fundamental protocols underlying the internet that we know and love. From there, we further investigated OAuth and saw how to get an access token to use in an API such as yelp. Then we made some requests to retrieve information that came back as a json format. We then transformed this data into a dataframe using the Pandas package. Finally, we created an initial visualization of the data that we retrieved using folium.
-
-
-```python
-#Reinforce previous skills:
-```
+In this lab, we learned how to use the Yelp API with authentication, making calls, understanding the responses and creating interactive geographical visualizations in Folium. We encourage you to re-visit this lab again once you have studied some important machine learning algorithms to make predictions , find similarities, group/cluster businesses or classify them based on user criteria. 
