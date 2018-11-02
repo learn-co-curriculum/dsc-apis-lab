@@ -9,7 +9,7 @@ One of the key aspects of being a data scientist is the ability to learn how a n
 
 On these lines, this lab requires you to learn another popular API (YELP Fusion) by following the provided detailed online documentation. We shall build a simple Geographical Information System (GIS) using the data from yelp.
 
-### Objectives
+## Objectives
 You will be able to: 
 * Successfully sign up for Yelp API 
 * Create HTTP requests to get data from Yelp API
