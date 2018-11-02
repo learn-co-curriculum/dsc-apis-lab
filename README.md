@@ -9,7 +9,7 @@ One of the key aspects of being a data scientist is the ability to learn how a n
 
 On these lines, this lab requires you to learn another popular API (YELP Fusion) by following the provided detailed online documentation. We shall build a simple Geographical Information System (GIS) using the data from yelp.
 
-### Objectives
+## Objectives
 You will be able to: 
 * Successfully sign up for Yelp API 
 * Create HTTP requests to get data from Yelp API
@@ -94,9 +94,6 @@ print(response)
 
 ```
 
-    {'businesses': [{'id': 'QE5aa5N-dbfvafLsjn7TVg', 'alias': 'bamboo-flute-fitzrovia', 'name': 'Bamboo Flute', 'image_url': 'https://s3-media3.fl.yelpcdn.com/bphoto/kYQZjHmzt8zy1634OsAsxQ/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/bamboo-flute-fitzrovia?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 29, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.5, 'coordinates': {'latitude': 51.5228746, 'longitude': -0.1418939}, 'transactions': [], 'price': '£', 'location': {'address1': '145 Cleveland Street', 'address2': '', 'address3': '', 'city': 'Fitzrovia', 'zip_code': 'W1T 6QH', 'country': 'GB', 'state': 'XGL', 'display_address': ['145 Cleveland Street', 'Fitzrovia W1T 6QH', 'United Kingdom']}, 'phone': '+442073872738', 'display_phone': '+44 20 7387 2738', 'distance': 1189.5082547156321}, {'id': 'h2cCoDNQOPd51HFwvuAGNg', 'alias': 'hakkasan-london-3', 'name': 'Hakkasan', 'image_url': 'https://s3-media2.fl.yelpcdn.com/bphoto/IcS9yzJnweDO4DsfJ94jAw/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/hakkasan-london-3?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 216, 'categories': [{'alias': 'cantonese', 'title': 'Cantonese'}], 'rating': 4.0, 'coordinates': {'latitude': 51.5171482803943, 'longitude': -0.13180578932657}, 'transactions': [], 'price': '££££', 'location': {'address1': '8 Hanway Place', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'W1T 1HD', 'country': 'GB', 'state': 'XGL', 'display_address': ['8 Hanway Place', 'London W1T 1HD', 'United Kingdom']}, 'phone': '+442079277000', 'display_phone': '+44 20 7927 7000', 'distance': 558.9650039747677}, {'id': 'sYwBQ7mJYhB35nn-_SZstQ', 'alias': 'yauatcha-london-7', 'name': 'Yauatcha', 'image_url': 'https://s3-media4.fl.yelpcdn.com/bphoto/K7D6nwyZbZFODMy4jEfr0A/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/yauatcha-london-7?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 456, 'categories': [{'alias': 'dimsum', 'title': 'Dim Sum'}, {'alias': 'seafood', 'title': 'Seafood'}, {'alias': 'noodles', 'title': 'Noodles'}], 'rating': 4.0, 'coordinates': {'latitude': 51.5137076071076, 'longitude': -0.135128831605189}, 'transactions': [], 'price': '£££', 'location': {'address1': '15-17 Broadwick Street', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'W1F 0DL', 'country': 'GB', 'state': 'XGL', 'display_address': ['15-17 Broadwick Street', 'London W1F 0DL', 'United Kingdom']}, 'phone': '+442074948888', 'display_phone': '+44 20 7494 8888', 'distance': 112.59840998419494}, {'id': 'pdFiFtol9YI__9ROOXUIYA', 'alias': 'lanzhou-noodle-bar-london', 'name': 'Lanzhou Noodle Bar', 'image_url': 'https://s3-media4.fl.yelpcdn.com/bphoto/IKy91e7hb9w14m4eA9HH1w/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/lanzhou-noodle-bar-london?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 300, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}, {'alias': 'noodles', 'title': 'Noodles'}], 'rating': 4.0, 'coordinates': {'latitude': 51.5116034713013, 'longitude': -0.127834377873126}, 'transactions': [], 'price': '£', 'location': {'address1': '33 Cranbourne Street', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'WC2H 7AD', 'country': 'GB', 'state': 'XGL', 'display_address': ['33 Cranbourne Street', 'London WC2H 7AD', 'United Kingdom']}, 'phone': '+442074674546', 'display_phone': '+44 20 7467 4546', 'distance': 578.4743547816091}, {'id': 'chEEcQbc8PbidTeXK34H9g', 'alias': 'hakkasan-mayfair-london-2', 'name': 'Hakkasan Mayfair', 'image_url': 'https://s3-media4.fl.yelpcdn.com/bphoto/7l0tXtBLbWOtWTCQVJLLYw/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/hakkasan-mayfair-london-2?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 116, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.0, 'coordinates': {'latitude': 51.5103202323384, 'longitude': -0.144935268434918}, 'transactions': [], 'price': '££££', 'location': {'address1': '17 Bruton Street', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'W1J 6QB', 'country': 'GB', 'state': 'XGL', 'display_address': ['17 Bruton Street', 'London W1J 6QB', 'United Kingdom']}, 'phone': '+442079071888', 'display_phone': '+44 20 7907 1888', 'distance': 681.4450716267161}, {'id': '6iCxFP7Oc0qG_6ByenO0sw', 'alias': 'silk-road-london-2', 'name': 'Silk Road', 'image_url': 'https://s3-media3.fl.yelpcdn.com/bphoto/pUXusTIbeDRInvi6fkNjmA/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/silk-road-london-2?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 43, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.5, 'coordinates': {'latitude': 51.4739712, 'longitude': -0.0896081}, 'transactions': [], 'price': '££', 'location': {'address1': '49 Camberwell Church Street', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'SE5 8TR', 'country': 'GB', 'state': 'XGL', 'display_address': ['49 Camberwell Church Street', 'London SE5 8TR', 'United Kingdom']}, 'phone': '+442077034832', 'display_phone': '+44 20 7703 4832', 'distance': 5403.445838977789}, {'id': 'Mrv3dA42EioqBz50t_f24Q', 'alias': 'hunan-london', 'name': 'Hunan', 'image_url': 'https://s3-media3.fl.yelpcdn.com/bphoto/sEgrRrMVkWaky7Yc7dvdgg/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/hunan-london?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 38, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.5, 'coordinates': {'latitude': 51.490493, 'longitude': -0.1526547}, 'transactions': [], 'price': '££££', 'location': {'address1': '51 Pimlico Road', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'SW1W 8NE', 'country': 'GB', 'state': 'XGL', 'display_address': ['51 Pimlico Road', 'London SW1W 8NE', 'United Kingdom']}, 'phone': '+442077305712', 'display_phone': '+44 20 7730 5712', 'distance': 2741.6022690860036}, {'id': 'MpdG-D0nKwGEZp0ApTtBaA', 'alias': 'barshu-london-2', 'name': 'Barshu', 'image_url': 'https://s3-media2.fl.yelpcdn.com/bphoto/jaGznOhEvqqcJXKCYt12Ug/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/barshu-london-2?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 96, 'categories': [{'alias': 'szechuan', 'title': 'Szechuan'}], 'rating': 4.0, 'coordinates': {'latitude': 51.512835, 'longitude': -0.130857}, 'transactions': [], 'price': '£££', 'location': {'address1': '28 Frith Street', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'W1D 5LF', 'country': 'GB', 'state': 'XGL', 'display_address': ['28 Frith Street', 'London W1D 5LF', 'United Kingdom']}, 'phone': '+442072878822', 'display_phone': '+44 20 7287 8822', 'distance': 357.1885184880618}, {'id': '5-_YNjtvoG-oYt1qAO3tVw', 'alias': 'bugis-street-brasserie-london', 'name': 'Bugis Street Brasserie', 'image_url': 'https://s3-media1.fl.yelpcdn.com/bphoto/kgtAwZ3oF2wh05ndSzQ1zA/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/bugis-street-brasserie-london?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 43, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}, {'alias': 'singaporean', 'title': 'Singaporean'}], 'rating': 4.0, 'coordinates': {'latitude': 51.4936621211568, 'longitude': -0.183931280273902}, 'transactions': [], 'price': '££', 'location': {'address1': 'Millennium Hotels & Resorts', 'address2': '4-18 Harrington Gardens', 'address3': '', 'city': 'London', 'zip_code': 'SW7 4LH', 'country': 'GB', 'state': 'XGL', 'display_address': ['Millennium Hotels & Resorts', '4-18 Harrington Gardens', 'London SW7 4LH', 'United Kingdom']}, 'phone': '+442073316211', 'display_phone': '+44 20 7331 6211', 'distance': 3946.1405823998143}, {'id': '3ea8x8r0gsVy8ltQycldsA', 'alias': 'gold-mine-london', 'name': 'Gold Mine', 'image_url': 'https://s3-media2.fl.yelpcdn.com/bphoto/aihm1QdPS5Mq79T_9rP7tA/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/gold-mine-london?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 66, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.0, 'coordinates': {'latitude': 51.5133018493652, 'longitude': -0.187491998076439}, 'transactions': [], 'price': '££', 'location': {'address1': '102 Queensway', 'address2': '', 'address3': '', 'city': 'London', 'zip_code': 'W2 3RR', 'country': 'GB', 'state': 'XGL', 'display_address': ['102 Queensway', 'London W2 3RR', 'United Kingdom']}, 'phone': '+442077928331', 'display_phone': '+44 20 7792 8331', 'distance': 3571.4713192257427}], 'total': 1200, 'region': {'center': {'longitude': -0.135955810546875, 'latitude': 51.51283552118349}}}
-
-
 ### JSON .. again ! 
 
 We have a nice nifty little return now! As you can see, the contents of the response is formatted as a string but what kind of data structures does this remind you of?  
@@ -122,14 +119,6 @@ This response is an example of a JSON (JavaScript Object Notation) format that w
 
 ```
 
-    businesses
-    <class 'dict_values'>
-    total
-    <class 'dict_values'>
-    region
-    <class 'dict_values'>
-
-
 Whoops, what's going on here!? Well, notice from our previous preview of the response that we saw there were a hierarhcy within the response. Let's begin to investigate further to see what the problem is.
 
 First, recall that the overall strucutre of the response was a dictionary. Let's look at what the keys are:
@@ -138,13 +127,6 @@ First, recall that the overall strucutre of the response was a dictionary. Let's
 ```python
 response.keys()
 ```
-
-
-
-
-    dict_keys(['businesses', 'total', 'region'])
-
-
 
 Consult the Yelp API and learn what value is carried in each key. 
 
@@ -159,11 +141,6 @@ print('REGION:', response['region'])
 print('TOTAL :',response['total'])
 ```
 
-    BUSINESS: {'id': 'QE5aa5N-dbfvafLsjn7TVg', 'alias': 'bamboo-flute-fitzrovia', 'name': 'Bamboo Flute', 'image_url': 'https://s3-media3.fl.yelpcdn.com/bphoto/kYQZjHmzt8zy1634OsAsxQ/o.jpg', 'is_closed': False, 'url': 'https://www.yelp.com/biz/bamboo-flute-fitzrovia?adjust_creative=xNHtXRpNa-MXGFJJTHHUvw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=xNHtXRpNa-MXGFJJTHHUvw', 'review_count': 29, 'categories': [{'alias': 'chinese', 'title': 'Chinese'}], 'rating': 4.5, 'coordinates': {'latitude': 51.5228746, 'longitude': -0.1418939}, 'transactions': [], 'price': '£', 'location': {'address1': '145 Cleveland Street', 'address2': '', 'address3': '', 'city': 'Fitzrovia', 'zip_code': 'W1T 6QH', 'country': 'GB', 'state': 'XGL', 'display_address': ['145 Cleveland Street', 'Fitzrovia W1T 6QH', 'United Kingdom']}, 'phone': '+442073872738', 'display_phone': '+44 20 7387 2738', 'distance': 1189.5082547156321}
-    REGION: {'center': {'longitude': -0.135955810546875, 'latitude': 51.51283552118349}}
-    TOTAL : 1200
-
-
 This makes more sense, so we are mainly interested in the `businesses` for our needs. 
 
 ### Print the names of businesses and included ratings 
@@ -172,18 +149,6 @@ This makes more sense, so we are mainly interested in the `businesses` for our n
 ```python
 # Code here 
 ```
-
-    bamboo-flute-fitzrovia - 4.5
-    hakkasan-london-3 - 4.0
-    yauatcha-london-7 - 4.0
-    lanzhou-noodle-bar-london - 4.0
-    hakkasan-mayfair-london-2 - 4.0
-    silk-road-london-2 - 4.5
-    hunan-london - 4.5
-    barshu-london-2 - 4.0
-    bugis-street-brasserie-london - 4.0
-    gold-mine-london - 4.0
-
 
 Great, now are are getting somewhere. It is a good idea at this stage to store this information as a dataframe for processing further. 
 ### Create a Pandas dataframe for contents of `businesses`
@@ -194,154 +159,6 @@ Great, now are are getting somewhere. It is a good idea at this stage to store t
 ```python
 # Code here 
 ```
-
-    10
-    Index(['alias', 'categories', 'coordinates', 'display_phone', 'distance', 'id',
-           'image_url', 'is_closed', 'location', 'name', 'phone', 'price',
-           'rating', 'review_count', 'transactions', 'url'],
-          dtype='object')
-
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>alias</th>
-      <th>categories</th>
-      <th>coordinates</th>
-      <th>display_phone</th>
-      <th>distance</th>
-      <th>id</th>
-      <th>image_url</th>
-      <th>is_closed</th>
-      <th>location</th>
-      <th>name</th>
-      <th>phone</th>
-      <th>price</th>
-      <th>rating</th>
-      <th>review_count</th>
-      <th>transactions</th>
-      <th>url</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>bamboo-flute-fitzrovia</td>
-      <td>[{'alias': 'chinese', 'title': 'Chinese'}]</td>
-      <td>{'latitude': 51.5228746, 'longitude': -0.1418939}</td>
-      <td>+44 20 7387 2738</td>
-      <td>1189.508255</td>
-      <td>QE5aa5N-dbfvafLsjn7TVg</td>
-      <td>https://s3-media3.fl.yelpcdn.com/bphoto/kYQZjH...</td>
-      <td>False</td>
-      <td>{'address1': '145 Cleveland Street', 'address2...</td>
-      <td>Bamboo Flute</td>
-      <td>+442073872738</td>
-      <td>£</td>
-      <td>4.5</td>
-      <td>29</td>
-      <td>[]</td>
-      <td>https://www.yelp.com/biz/bamboo-flute-fitzrovi...</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>hakkasan-london-3</td>
-      <td>[{'alias': 'cantonese', 'title': 'Cantonese'}]</td>
-      <td>{'latitude': 51.5171482803943, 'longitude': -0...</td>
-      <td>+44 20 7927 7000</td>
-      <td>558.965004</td>
-      <td>h2cCoDNQOPd51HFwvuAGNg</td>
-      <td>https://s3-media2.fl.yelpcdn.com/bphoto/IcS9yz...</td>
-      <td>False</td>
-      <td>{'address1': '8 Hanway Place', 'address2': '',...</td>
-      <td>Hakkasan</td>
-      <td>+442079277000</td>
-      <td>££££</td>
-      <td>4.0</td>
-      <td>216</td>
-      <td>[]</td>
-      <td>https://www.yelp.com/biz/hakkasan-london-3?adj...</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>yauatcha-london-7</td>
-      <td>[{'alias': 'dimsum', 'title': 'Dim Sum'}, {'al...</td>
-      <td>{'latitude': 51.5137076071076, 'longitude': -0...</td>
-      <td>+44 20 7494 8888</td>
-      <td>112.598410</td>
-      <td>sYwBQ7mJYhB35nn-_SZstQ</td>
-      <td>https://s3-media4.fl.yelpcdn.com/bphoto/K7D6nw...</td>
-      <td>False</td>
-      <td>{'address1': '15-17 Broadwick Street', 'addres...</td>
-      <td>Yauatcha</td>
-      <td>+442074948888</td>
-      <td>£££</td>
-      <td>4.0</td>
-      <td>456</td>
-      <td>[]</td>
-      <td>https://www.yelp.com/biz/yauatcha-london-7?adj...</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>lanzhou-noodle-bar-london</td>
-      <td>[{'alias': 'chinese', 'title': 'Chinese'}, {'a...</td>
-      <td>{'latitude': 51.5116034713013, 'longitude': -0...</td>
-      <td>+44 20 7467 4546</td>
-      <td>578.474355</td>
-      <td>pdFiFtol9YI__9ROOXUIYA</td>
-      <td>https://s3-media4.fl.yelpcdn.com/bphoto/IKy91e...</td>
-      <td>False</td>
-      <td>{'address1': '33 Cranbourne Street', 'address2...</td>
-      <td>Lanzhou Noodle Bar</td>
-      <td>+442074674546</td>
-      <td>£</td>
-      <td>4.0</td>
-      <td>300</td>
-      <td>[]</td>
-      <td>https://www.yelp.com/biz/lanzhou-noodle-bar-lo...</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>hakkasan-mayfair-london-2</td>
-      <td>[{'alias': 'chinese', 'title': 'Chinese'}]</td>
-      <td>{'latitude': 51.5103202323384, 'longitude': -0...</td>
-      <td>+44 20 7907 1888</td>
-      <td>681.445072</td>
-      <td>chEEcQbc8PbidTeXK34H9g</td>
-      <td>https://s3-media4.fl.yelpcdn.com/bphoto/7l0tXt...</td>
-      <td>False</td>
-      <td>{'address1': '17 Bruton Street', 'address2': '...</td>
-      <td>Hakkasan Mayfair</td>
-      <td>+442079071888</td>
-      <td>££££</td>
-      <td>4.0</td>
-      <td>116</td>
-      <td>[]</td>
-      <td>https://www.yelp.com/biz/hakkasan-mayfair-lond...</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
 
 This is fantastic. We have successfully learned a new API , made requests to it, recieved and studied the response and stored the results in a dataframe and can now enjoy all the goodness of Pandas. Thats quite a bit of data engineering. 
 
