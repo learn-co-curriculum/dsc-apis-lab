@@ -1,228 +1,62 @@
 
-# Building a Simple GIS with Yelp API and Folium - Lab
+# Yelp API - Lab
 
 ## Introduction 
 
-So we have learned quite a bit about APIs and how they are now big buzzword in the tech industry. Think of it as a protocol for how to make requests and communicate with another server. We have seen how to mine Twitter for getting text data and apply basic frequency based NLP techniques to get some insight. 
-
-One of the key aspects of being a data scientist is the ability to learn how a new API works, how to go through its specific authentication process (OAuth) and how to process the data structures that get returned as a response to our requests. It is a good practice to spend some time learning the API through the official documentation before sending in requests. 
-
-On these lines, this lab requires you to learn another popular API (YELP Fusion) by following the provided detailed online documentation. We shall build a simple Geographical Information System (GIS) using the data from yelp.
+Now that we've seen how the Yelp API works, and some basic Folium visualizations its time to put those skills to work in order to create a working map! Taking things a step further, you'll also independently explore how to perform pagination in order to retrieve a full results set from the Yelp API!
 
 ## Objectives
+
 You will be able to: 
-* Successfully sign up for Yelp API 
 * Create HTTP requests to get data from Yelp API
 * Parse HTTP responses and perform data analysis on the data returned
+* Perform pagination to retrieve troves of data!
 * Create a simple geographical system on to view information about selected businesses, at a given location. 
 
+## Problem Introduction
 
-## The Yelp Fusion API - v3
+You've now worked with some API calls, but we have yet to see how to retrieve a more complete dataset in a programmatic manner. Returning to the Yelp API, the [documentation](https://www.yelp.com/developers/documentation/v3/business_search) also provides us details regarding the API limits. These often include details about the number of requests a user is allowed to make within a specified time limit and the maximum number of results to be returned. In this case, we are told that any request has a maximum of 50 results per request and defaults to 20. Furthermore, any search will be limited to a total of 1000 results. To retrieve all 1000 of these results, we would have to page through the results piece by piece, retriving 50 at a time. Processes such as these are often refered to as pagination.
 
+In this lab, you will define a search and then paginate over the results to retrieve all of the results. You'll then parse these responses as a DataFrame (for further exploration) and create a map using Folium to visualize the results geographically.
 
-### Point your browser over to this [yelp page](https://www.yelp.com/developers/v3/manage_app) and create an app in order to obtain  `client_id` and `api_key` tokens. 
+## Part I - Make the Initial Request
 
-**NOTE:** You will be required to sign up using Google or Facebook etc. if you dont already have an account.
-
-<img src="yelp_app.png" width=500>
-
-
-
-After registration, you'll be presented with your account information and limits of your access. For Yelp, or any other API for that reason, you need to make sure that you dont surpass your request quota, otherwise, you may end up getting banned in some cases. Yelp shows this information to you as below:
-
-<img src="quota.png" width=500>
-
-### Save your api_key and client_id in the variables below:
+Start by making an initial request to the Yelp API. Your search must include at least 2 parameters: **term** and **location**. For example, you might search for pizza restaurants in NYC. The term and location is up to you, but make the request below.
 
 
 ```python
-# Save your tokens in the following string variables
-client_id = ''
-api_key = ''
+#Your code here
 ```
 
-## The `yelpapi` 
+## Pagination
 
-The yelpapi is a pure Python implementation of the Yelp Fusion API (aka Yelp v3 API). It is simple, fast, and robust to any changes Yelp may make to the API in the future. See tha basic usage of this library on the [official Github repo](https://github.com/gfairchild/yelpapi). You may look out for other APIs to achieve this but for this lesson, we shall use it for sake of simplicity. 
+Now that you have an initial response, you can examine the contents of the json container. For example, you might start with ```response.josn().keys()```. Here, you'll see a key for `'total'`, which tells you the full number of matching results given your query parameters. Write a loop (or ideally a function) which then makes successive API calls using the offset parameter to retrieve all of the results (or 5000 for a particularly large result set) for the original query. As you do this, be mindful of how you store the data. Your final goal will be to reformat the data concerning the businesses themselves into a pandas DataFrame from the json objects.
 
-First you must pip install the library
+**Note: be mindful of the API rate limits. You can only make 5000 requests per day, and are also can make requests too fast. Start prototyping small before running a loop that could be faulty. You can also use time.sleep(n) to add delays. For more details see https://www.yelp.com/developers/documentation/v3/rate_limiting.**
 
 
 ```python
-# !pip install yelpapi
+# Your code here; use a function or loop to retrieve all the results from your original request
 ```
 
-### Import `yelpapi ` into working environment and pass in the api_key as shown in the Github Repo 
+## Exploratory Analysis
+
+Take the restaurants from the previous question and do an intial exploratory analysis. At minimum, this should include looking at the distribution of features such as price, rating and number of reviews as well as the relations between these dimensions.
 
 
 ```python
-# Code here
+#Your code here
 ```
 
-### The Api request and response
+## Mapping
 
-Great so we can now start making API calls using the format:
-```python
-response = yelp_api.search_query(term =<search term>, 
-                                 location=<search location>, 
-                                 sort_by='rating', 
-                                 limit=50)
-```
-We can pass in a lot more arguments to refine our search. [Here is a complete list of options that search API provides us](https://www.yelp.com/developers/documentation/v3/business_search)
-
-* Make an API request using a simple criteria location and term
-* save the response as `response` 
-* inspect the type and contents of `response`.
+Look at the initial Yelp example and try and make a map using Folium of the restaurants you retrieved. Be sure to also add popups to the markers giving some basic information such as name, rating and price.
 
 
 ```python
-## Pass in a spcific term and location to make a call. 
-
-# For this example, we are looking for chinese food in London.
-
-term = 'Chinese food'
-location = 'London'
+#Your code here
 ```
 
+## Summary
 
-```python
-# Make an API call using chosen term and location
-
-response = None
-type(response)
-print(response)
-
-```
-
-### JSON .. again ! 
-
-We have a nice nifty little return now! As you can see, the contents of the response is formatted as a string but what kind of data structures does this remind you of?  
-
-To start there's the outer curly brackets:  
-
-#### {"businesses":   
-
-Hopefully you're thinking 'hey that's just like a python dictionary!'
-
-Then within that we have what appears to be a list of dictionaries:  
-
-#### {"id": "jeWIYbgBho9vBDhc5S1xvg",
-
-This response is an example of a JSON (JavaScript Object Notation) format that we've seen so many times before. We can simply treat it as a dictionary and process it further. 
-
-### Inspect the values for all the keys in the response
-
-
-```python
-# inspect the key value pairs to understand the strcuture of data 
-
-
-```
-
-Whoops, what's going on here!? Well, notice from our previous preview of the response that we saw there were a hierarhcy within the response. Let's begin to investigate further to see what the problem is.
-
-First, recall that the overall strucutre of the response was a dictionary. Let's look at what the keys are:
-
-
-```python
-response.keys()
-```
-
-Consult the Yelp API and learn what value is carried in each key. 
-
-#### Continue to preview these keys  further to get a little better acquainted. 
-
-
-```python
-print('BUSINESS:', response['businesses'][0])
-
-print('REGION:', response['region'])
-
-print('TOTAL :',response['total'])
-```
-
-This makes more sense, so we are mainly interested in the `businesses` for our needs. 
-
-### Print the names of businesses and included ratings 
-
-
-```python
-# Code here 
-```
-
-Great, now are are getting somewhere. It is a good idea at this stage to store this information as a dataframe for processing further. 
-### Create a Pandas dataframe for contents of `businesses`
-* Check the number of records in the dataframe
-* Inspect the columns and head
-
-
-```python
-# Code here 
-```
-
-This is fantastic. We have successfully learned a new API , made requests to it, recieved and studied the response and stored the results in a dataframe and can now enjoy all the goodness of Pandas. Thats quite a bit of data engineering. 
-
-### Visualize the location from search query
-The `region` key in the response carries the geographical information for the region searched.
-* Get the latitude / longitude information from `region`
-* Create a folium map with these coordinates. 
-* Use a zoom start value = 13
-
-
-```python
-import folium
-
-# Code here
-```
-
-Expected Output:
-![](london.png)
-
-Nice. We can now extract the coordinate information for each business and plot it on this map.
-
-### Get the business coordinates from dataframe for each business and plot on the map above
-
-
-```python
-# Code here 
-```
-
-Expected output:
-![](markers.png)
-
-Kool so we have everything in place but the visualization is still not very *Informative* so to speak. You can't tell which marker represents which business and also other information on business like rating, cost, links to user reviews etc. is still not visible. SO its geographical , but not exactly an Information System yet as you cant make any decisions on this information.  Here's as example of what it possible can look like
-![](out.png)
-
-
-For this you need to understand `folium.popup()` which let's you click on a marker to show a pop up window. This window acts more like an HTML page so you can easily format the information you present in the popup using following values:
-* The official business logo/image:  `image_url`
-* Name of the Business: `name`
-* Price (how expensive): `price`
-* Links to user reviews on Yelp: `url`
-
-Doing this in HTML is not required , so we recommend that you first try to put in basic information in the popups as just text. As a next stage , you can start changing into HTML code to make it visually more appealing.
-
-### Attempt to recreate the interactive visualization shown above.
-
-Here's a good resource with code examples on [how to create folium popups](https://github.com/python-visualization/folium/blob/master/examples/Popups.ipynb)
-
-
-```python
-# Code here 
-```
-
-Wow . An Interactive Geographical information System backed by live data through API calling. 
-
-<img src="star.jpg" width=300>
-
-### More APIs to Checkout
-
-* Google Maps
-* Twitter
-* AWS
-* IBM's Watson
-* Yelp
-
-## Summary 
-
-In this lab, we learned how to use the Yelp API with authentication, making calls, understanding the responses and creating interactive geographical visualizations in Folium. We encourage you to re-visit this lab again once you have studied some important machine learning algorithms to make predictions , find similarities, group/cluster businesses or classify them based on user criteria. 
+Nice work! In this lab, you synthesized your skills for the day, making multiple API calls to Yelp in order to paginate through a results set, performing some basic exploratory analysis and then creating a nice map visual to display the results! Well done!
