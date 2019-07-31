@@ -26,7 +26,49 @@ Start by making an initial request to the Yelp API. Your search must include at 
 
 
 ```python
-#Your code here
+# Your code here
+```
+
+
+```python
+# __SOLUTION__
+# IMPORTANT: THIS SOLUTION WILL NOT RUN UNLESSS YOU FILL IN THE CLIENT_ID AND API_KEY!
+
+import requests
+import pandas as pd
+
+client_id = 
+api_key = 
+
+term = 'pizza'
+location = 'New York NY'
+
+url = 'https://api.yelp.com/v3/businesses/search'
+
+headers = {
+        'Authorization': 'Bearer {}'.format(api_key),
+    }
+
+url_params = {
+                'term': term.replace(' ', '+'),
+                'location': location.replace(' ', '+'),
+            }
+response = requests.get(url, headers=headers, params=url_params) #Your code here
+print(response)
+print(type(response.text))
+print(response.text[:1000])
+```
+
+
+```python
+# __SOLUTION__
+len(response.json()['businesses'])
+```
+
+
+```python
+# __SOLUTION__
+response.json()['total']
 ```
 
 ## Pagination
@@ -40,13 +82,66 @@ Now that you have an initial response, you can examine the contents of the json 
 # Your code here; use a function or loop to retrieve all the results from your original request
 ```
 
+
+```python
+# __SOLUTION__
+import pandas as pd
+import time
+
+def yelp_call(url_params, api_key):
+    url = 'https://api.yelp.com/v3/businesses/search'
+    headers = {'Authorization': 'Bearer {}'.format(api_key)}
+    response = requests.get(url, headers=headers, params=url_params)
+    
+    df = pd.DataFrame(response.json()['businesses'])
+    return df
+
+def all_results(url_params, api_key):
+    num = response.json()['total']
+    print('{} total matches found.'.format(num))
+    cur = 0
+    dfs = []
+    while cur < num and cur < 1000:
+        url_params['offset'] = cur
+        dfs.append(yelp_call(url_params, api_key))
+        time.sleep(1) #Wait a second
+        cur += 50
+    df = pd.concat(dfs, ignore_index=True)
+    return df
+
+term = 'pizza'
+location = 'Astoria NY'
+url_params = {  'term': term.replace(' ', '+'),
+                'location': location.replace(' ', '+'),
+                'limit' : 50
+             }
+df = all_results(url_params, api_key)
+print(len(df))
+df.head()
+```
+
 ## Exploratory Analysis
 
 Take the restaurants from the previous question and do an initial exploratory analysis. At minimum, this should include looking at the distribution of features such as price, rating and number of reviews as well as the relations between these dimensions.
 
 
 ```python
-#Your code here
+# Your code here
+```
+
+
+```python
+# __SOLUTION__
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+df.price = df.price.fillna(value=0)
+price_dict = {"$": 1, "$$":2, "$$$": 3, "$$$$":4}
+df.price = df.price.map(price_dict)
+
+pd.plotting.scatter_matrix(df[['price', 'rating', 'review_count']])
+Out[5]:
+
 ```
 
 ## Mapping
@@ -55,7 +150,34 @@ Look at the initial Yelp example and try and make a map using Folium of the rest
 
 
 ```python
-#Your code here
+# Your code here
+```
+
+
+```python
+# __SOLUTION__
+import folium
+
+lat_long = df['coordinates'].iloc[0]
+lat = lat_long['latitude']
+long = lat_long['longitude']
+yelp_map = folium.Map([lat, long])
+
+for row in df.index:
+    try:
+        lat_long = df['coordinates'][row]
+        lat = lat_long['latitude']
+        long = lat_long['longitude']
+        name = df['name'][row]
+        rating = df['rating'][row]
+        price = df['price'][row]
+        details = "{}\nPrice: {} Rating:{}".format(name,str(price),str(rating))
+        popup = folium.Popup(details, parse_html=True)
+        marker = folium.Marker([lat, long], popup=popup)
+        marker.add_to(yelp_map)
+    except:
+        print('Hit error on row: {}'.format(row))
+yelp_map
 ```
 
 ## Summary
