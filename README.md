@@ -26,7 +26,7 @@ Start by making an initial request to the Yelp API. Your search must include at 
 
 
 ```python
-#Your code here
+# Your code here
 ```
 
 ## Pagination
@@ -46,7 +46,7 @@ Take the restaurants from the previous question and do an initial exploratory an
 
 
 ```python
-#Your code here
+# Your code here
 ```
 
 ## Mapping
@@ -55,7 +55,7 @@ Look at the initial Yelp example and try and make a map using Folium of the rest
 
 
 ```python
-#Your code here
+# Your code here
 ```
 
 ## Summary
