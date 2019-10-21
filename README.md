@@ -4,15 +4,14 @@
 
 ## Introduction 
 
-Now that we've seen how the Yelp API works and some basic Folium visualizations, it's time to put those skills to work in order to create a working map! Taking things a step further, you'll also independently explore how to perform pagination in order to retrieve a full results set from the Yelp API!
+We've seen how the Yelp API works and how to create basic visualizations using Folium. It's time to put those skills to work in order to create a working map! Taking things a step further, you'll also independently explore how to perform pagination in order to retrieve a full results set from the Yelp API!
 
 ## Objectives
 
 You will be able to: 
-* Create HTTP requests to get data from Yelp API
-* Parse HTTP responses and perform data analysis on the data returned
-* Perform pagination to retrieve troves of data!
-* Create a simple geographical system to view information about selected businesses, at a given location. 
+
+* Using pagination and multiple functions, gather large amounts of data from an API, parse the data and make sense of it with meaningful analysis
+* Create maps using Folium
 
 ## Problem Introduction
 
