@@ -29,7 +29,7 @@ You've now worked with some API calls, but we have yet to see how to retrieve a 
 
 Returning to the Yelp API, the [documentation](https://www.yelp.com/developers/documentation/v3/business_search) also provides us details regarding the **API limits**. These often include details about the number of requests a user is allowed to make within a specified time limit and the maximum number of results to be returned. In this case, we are told that any request has a **maximum of 50 results per request** and defaults to 20. Furthermore, any search will be limited to a **total of 1000 results**. To retrieve all 1000 of these results, we would have to page through the results piece by piece, retrieving 50 at a time. Processes such as these are often referred to as pagination.
 
-Also, be mindful of the **API** ***rate*** **limits**. You can only make **5000 requests per day** and are also can make requests too fast. Start prototyping small before running a loop that could be faulty. You can also use `time.sleep(n)` to add delays. For more details see https://www.yelp.com/developers/documentation/v3/rate_limiting.
+Also, be mindful of the **API** ***rate*** **limits**. You can only make **5000 requests per day** and can make requests too fast. Start prototyping small before running a loop that could be faulty. You can also use `time.sleep(n)` to add delays. For more details see https://www.yelp.com/developers/documentation/v3/rate_limiting.
 
 In this lab, you will define a search and then paginate over the results to retrieve all of the results. You'll then parse these responses as a list of dictionaries (for further exploration) and create a map using Folium to visualize the results geographically.
 
@@ -484,7 +484,9 @@ ax3.set_ylabel("Number of Businesses");
 ```
 
 
+    
 ![png](index_files/index_31_0.png)
+    
 
 
 Describe the distributions displayed above and interpret them in the context of your query. (Your answer may differ from the solution branch depending on your query.)
@@ -525,7 +527,9 @@ ax.legend();
 ```
 
 
+    
 ![png](index_files/index_35_0.png)
+    
 
 
 Is a higher price associated with a higher rating? (No need for any additional math/statistics, just interpret what you see in the plot.)
@@ -555,7 +559,9 @@ ax.set_xlim(left=0, right=1000);
 ```
 
 
+    
 ![png](index_files/index_39_0.png)
+    
 
 
 Is a higher number of reviews associated with a higher rating?
